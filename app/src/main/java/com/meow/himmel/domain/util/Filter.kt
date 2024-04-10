@@ -1,15 +1,21 @@
 package com.meow.himmel.domain.util
 
-sealed class Filter(val filterType: FilterType) {
-    class Status(filterType: FilterType) : Filter(filterType)
-    class Category(filterType: FilterType) : Filter(filterType)
-    class AgeRestriction(filterType: FilterType) : Filter(filterType)
+import com.meow.himmel.domain.model.Category
 
-    fun copy(filterType: FilterType): Filter {
+sealed class Filter(val filterType: FilterType) {
+    class All(filterType: FilterType) : Filter(filterType)
+    class Completed(filterType: FilterType) : Filter(filterType)
+    class OnGoing(filterType: FilterType) : Filter(filterType)
+    class Genre(filterType: FilterType, val category: Category) : Filter(filterType)
+    class R18(filterType: FilterType) : Filter(filterType)
+
+    fun copy(filterType: FilterType, category: Category): Filter {
         return when (this) {
-            is Status -> Status(filterType)
-            is Category -> Category(filterType)
-            is AgeRestriction -> AgeRestriction(filterType)
+            is All -> All(filterType)
+            is Completed -> Completed(filterType)
+            is OnGoing -> OnGoing(filterType)
+            is Genre -> Genre(filterType, category)
+            is R18 -> R18(filterType)
         }
     }
 }

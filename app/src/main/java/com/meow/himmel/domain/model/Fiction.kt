@@ -13,5 +13,7 @@ class Fiction() : RealmObject {
     var author: User = User()
     var coverPath: String = ""
     var dateAdded: Long = System.currentTimeMillis()
-    var tag: RealmList<Category> = realmListOf()
+    // 0: ongoing, 1: completed, 2: dropped, 3: hiatus
+    var status: Int = 0
+    var categories: RealmList<Category> = realmListOf()
 }
