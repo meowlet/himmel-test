@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 class GetFictions(
     private val repository: MainRepository
 ) {
-    operator fun invoke(
+    suspend operator fun invoke(
         filters: List<Filter> = listOf(Filter.All(FilterType.Include)),
         order: Order = Order.Title(OrderType.Ascending)
     ): Flow<List<Fiction>> {

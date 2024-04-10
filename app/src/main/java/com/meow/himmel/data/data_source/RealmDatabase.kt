@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.mongodb.kbson.ObjectId
 
-class Realm(
-    private val database: Realm
+class RealmDatabase(
+    private val realm: Realm
 ) {
     fun getFictions(): Flow<List<Fiction>> {
-        return flowOf(database.query<Fiction>().find())
+        return flowOf(realm.query<Fiction>().find())
     }
 
     fun getFiction(fictionId: ObjectId): Fiction {
-        return database.query<Fiction>("id == $0", fictionId).find().first()
+        return realm.query<Fiction>("id == $0", fictionId).find().first()
     }
 }
