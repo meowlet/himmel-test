@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import org.mongodb.kbson.ObjectId
 
 interface MainRepository {
-    suspend fun getFictionList(): Flow<List<Fiction>>
+    fun getFictionList(): Flow<List<Fiction>>
     suspend fun getFictionDetail(fictionId: ObjectId): Fiction
 }

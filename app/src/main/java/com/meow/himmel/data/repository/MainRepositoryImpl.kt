@@ -9,7 +9,7 @@ import org.mongodb.kbson.ObjectId
 class MainRepositoryImpl(
     private val database: RealmDatabase
 ) : MainRepository {
-    override suspend fun getFictionList(): Flow<List<Fiction>> {
+    override fun getFictionList(): Flow<List<Fiction>> {
         return database.getFictions()
     }
 

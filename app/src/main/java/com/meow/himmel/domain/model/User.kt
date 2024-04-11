@@ -4,10 +4,10 @@ import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
-class User: RealmObject {
+class User : RealmObject {
     @PrimaryKey
     var id: ObjectId = ObjectId()
     var userName: String = ""
     var displayName: String = ""
-    var credential: UserCredential = UserCredential()
+    var credential: UserCredential? = UserCredential()
 }

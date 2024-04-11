@@ -10,7 +10,7 @@ class Fiction() : RealmObject {
     @PrimaryKey
     var id: ObjectId = ObjectId()
     var title: String = ""
-    var author: User = User()
+    var author: User? = User()
     var coverPath: String = ""
     var dateAdded: Long = System.currentTimeMillis()
     // 0: ongoing, 1: completed, 2: dropped, 3: hiatus
