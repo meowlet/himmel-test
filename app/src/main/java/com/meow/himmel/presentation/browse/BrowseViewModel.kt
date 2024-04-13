@@ -8,6 +8,7 @@ import com.meow.himmel.domain.use_case.MainUseCases
 import com.meow.himmel.domain.util.Order
 import com.meow.himmel.domain.util.OrderType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,13 +28,16 @@ class BrowseViewModel @Inject constructor(
                     getFictions(event.order)
                 }
             }
-            is BrowseEvent.ToggleBottomSheet -> _state.value = state.value.copy(isBottomSheetVisible = !state.value.isBottomSheetVisible)
+
+            is BrowseEvent.ToggleBottomSheet -> _state.value =
+                state.value.copy(isBottomSheetVisible = !state.value.isBottomSheetVisible)
         }
     }
+
     private fun getFictions(
         order: Order = Order.Date(OrderType.Descending)
     ) = viewModelScope.launch {
-        useCases.getFictions(order = order).onEach { fictions ->
+        useCases.getFictions(order = order).first().also { fictions ->
             _state.value = state.value.copy(fictions = fictions, order = order)
         }
     }
