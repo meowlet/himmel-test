@@ -71,7 +71,8 @@ export class SignUpPage {
       until.elementLocated(selector),
       5000
     );
-    return await errorElement.getText();
+
+    return (await errorElement.getText()) || "";
   }
 
   async getSuccessMessage(): Promise<string> {

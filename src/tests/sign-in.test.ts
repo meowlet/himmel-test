@@ -1,8 +1,22 @@
 import { WebDriver } from "selenium-webdriver";
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { createDriver } from "./setup";
+import {
+  describe,
+  test,
+  expect,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from "bun:test";
 import { SignInPage } from "../pages/SignInPage";
 import { testConfig } from "../config/settings";
+import { ExcelDataReader } from "../utils/ExcelDataReader";
+import { ReporterHelper } from "../utils/ReporterHelper";
+import { createDriver } from "../utils/Setup";
+
+const excelReader = new ExcelDataReader("./test-data/test-data.xlsx");
+const TEST_SHEET = "SignInTests";
+
+const reporter = ReporterHelper.initReporter("SignInTests");
 
 describe("SignIn Page Tests", () => {
   let driver: WebDriver;
@@ -18,28 +32,40 @@ describe("SignIn Page Tests", () => {
     await driver.quit();
   });
 
-  test("should successfully sign in with valid credentials", async () => {
-    const { username, password } = testConfig.users.standard;
-    await signInPage.signIn(username, password);
-
-    const isSignedIn = await signInPage.isSignedIn();
-    expect(isSignedIn).toBe(true);
+  afterAll(() => {
+    ReporterHelper.exportReport();
   });
 
-  test("should show error message with invalid username", async () => {
-    await signInPage.signIn("invalid_user", testConfig.users.standard.password);
+  test("should successfully sign in with valid credentials", async () => {
+    await ReporterHelper.executeTest("TC001", "Valid Sign In", async () => {
+      const testData = excelReader.getTestCaseData(TEST_SHEET, "TC001", "D");
 
-    const errorMessage = await signInPage.getErrorMessage();
-    expect(errorMessage).toContain("User not found");
+      await signInPage.signIn(testData.username, testData.password);
+
+      const isSignedIn = await signInPage.isSignedIn();
+      expect(isSignedIn).toBe(true);
+    });
   });
 
   test("should show error message with invalid password", async () => {
-    await signInPage.signIn(
-      testConfig.users.standard.username,
-      "wrong_password"
-    );
+    await ReporterHelper.executeTest("TC002", "Invalid Password", async () => {
+      const testData = excelReader.getTestCaseData(TEST_SHEET, "TC002", "D");
 
-    const errorMessage = await signInPage.getErrorMessage();
-    expect(errorMessage).toContain("Password does not match");
+      await signInPage.signIn(testData.username, testData.password);
+
+      const errorMessage = await signInPage.getErrorMessage();
+      expect(errorMessage).toContain("Password does not match");
+    });
+  });
+
+  test("should show error message with non-existent user", async () => {
+    await ReporterHelper.executeTest("TC003", "Non-existent User", async () => {
+      const testData = excelReader.getTestCaseData(TEST_SHEET, "TC003", "D");
+
+      await signInPage.signIn(testData.username, testData.password);
+
+      const errorMessage = await signInPage.getErrorMessage();
+      expect(errorMessage).toContain("User not found");
+    });
   });
 });
